@@ -180,6 +180,3 @@ npm run build
 4. View the saved submission and AI response.
 5. Open the navbar contact button and submit the popup contact form.
 
-## Author
-
-Built for assessment and portfolio demonstration.
