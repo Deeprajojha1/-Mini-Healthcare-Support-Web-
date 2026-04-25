@@ -16,6 +16,20 @@ export async function submitContact(req: Request, res: Response) {
     return res.status(400).json({ message: "Please provide valid contact form details." });
   }
 
-  const contact = await Contact.create(parsed.data);
+  const contact = await Contact.create({
+    ...parsed.data,
+    email: req.user?.email ?? parsed.data.email,
+  });
   return res.status(201).json({ contact });
+}
+
+export async function getLatestContact(req: Request, res: Response) {
+  const email = req.user?.email;
+
+  if (!email) {
+    return res.status(401).json({ message: "Not authorized." });
+  }
+
+  const contact = await Contact.findOne({ email }).sort({ createdAt: -1 });
+  return res.status(200).json({ contact });
 }

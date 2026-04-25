@@ -23,6 +23,11 @@ const formSchema = new Schema(
       enum: ["Patient", "Volunteer"],
       required: true,
     },
+    aiAdvice: {
+      type: String,
+      default: "",
+      trim: true,
+    },
   },
   {
     timestamps: true,

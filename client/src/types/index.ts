@@ -14,6 +14,7 @@ export interface FormPayload {
   email: string;
   message: string;
   role: "Patient" | "Volunteer";
+  aiAdvice?: string;
 }
 
 export interface FormRecord extends FormPayload {

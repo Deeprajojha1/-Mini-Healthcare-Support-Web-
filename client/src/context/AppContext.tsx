@@ -1,8 +1,9 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import toast from "react-hot-toast";
 import api from "../lib/api";
 import type { ContactPayload, ContactRecord, FormPayload, FormRecord } from "../types";
+import { useAuth } from "./AuthContext";
 
 interface AppContextValue {
   advice: string;
@@ -19,6 +20,7 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useAuth();
   const [advice, setAdvice] = useState("");
   const [lastSubmission, setLastSubmission] = useState<FormRecord | null>(null);
   const [lastContact, setLastContact] = useState<ContactRecord | null>(null);
@@ -31,16 +33,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return data.advice;
   };
 
+  useEffect(() => {
+    const loadLatestRecords = async () => {
+      try {
+        const [latestFormResponse, latestContactResponse] = await Promise.all([
+          api.get<{ form: FormRecord | null }>("/form/latest"),
+          api.get<{ contact: ContactRecord | null }>("/contact/latest"),
+        ]);
+
+        setLastSubmission(latestFormResponse.data.form);
+        setLastContact(latestContactResponse.data.contact);
+        setAdvice(latestFormResponse.data.form?.aiAdvice ?? "");
+      } catch {
+        setLastSubmission(null);
+        setLastContact(null);
+        setAdvice("");
+      }
+    };
+
+    if (isAuthenticated) {
+      void loadLatestRecords();
+      return;
+    }
+
+    setLastSubmission(null);
+    setLastContact(null);
+    setAdvice("");
+  }, [isAuthenticated]);
+
   const submitSupportForm = async (payload: FormPayload) => {
     setSubmitting(true);
 
     try {
-      const [formResponse, adviceText] = await Promise.all([
-        api.post<{ form: FormRecord }>("/form/submit", payload),
-        requestAdvice(payload.message, payload.role),
-      ]);
+      const adviceText = await requestAdvice(payload.message, payload.role);
+      const { data } = await api.post<{ form: FormRecord }>("/form/submit", {
+        ...payload,
+        aiAdvice: adviceText,
+      });
 
-      setLastSubmission(formResponse.data.form);
+      setLastSubmission(data.form);
       setAdvice(adviceText);
       toast.success("Your healthcare request has been submitted.");
     } catch (error: unknown) {
