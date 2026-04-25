@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", sans-serif;
+}
+
+:root {
+  color: #d8f3dc;
+  background:
+    radial-gradient(circle at top, rgba(82, 183, 136, 0.22), transparent 32%),
+    linear-gradient(180deg, #06120d 0%, #081c15 48%, #0b1f18 100%);
+  font-family: "Manrope", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(45, 106, 79, 0.32), transparent 30%),
+    linear-gradient(180deg, #06120d 0%, #081c15 48%, #0b1f18 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
+}
+
+select,
+label[for],
+summary {
+  cursor: pointer;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: rgba(8, 28, 21, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(116, 198, 157, 0.14);
+  box-shadow: 0 25px 90px rgba(0, 0, 0, 0.22);
+}
+
+.hover-lift {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(110, 231, 183, 0.26);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.28);
+}
+
+.field {
+  @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-emerald-400/60 focus:bg-white/8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10;
+}
